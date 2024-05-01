@@ -1,9 +1,17 @@
 import { Revenue } from './definitions';
 
-export const formatCurrency = (amount: number) => {
+export const formatCurrencyToNearestCent = (amount: number) => {
   return (amount / 100).toLocaleString('en-US', {
     style: 'currency',
     currency: 'USD',
+  });
+};
+
+export const formatCurrencyToNearestDollar = (amount: number) => {
+  return (amount / 100).toLocaleString('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0,
   });
 };
 

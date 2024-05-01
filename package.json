@@ -7,6 +7,7 @@
     "prettier": "prettier --write --ignore-unknown .",
     "prettier:check": "prettier --check --ignore-unknown .",
     "seed": "node -r dotenv/config ./scripts/seed.js",
+    "seedCareer": "node -r dotenv/config ./scripts/seedCareer.js",
     "start": "next start"
   },
   "dependencies": {

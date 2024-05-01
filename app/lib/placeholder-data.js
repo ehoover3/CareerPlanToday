@@ -9,6 +9,93 @@ const users = [
   },
 ];
 
+const careers = [
+  {
+    id: '0018dc9e-712f-4377-85e9-fec4b6a6442a',
+    name: 'Electrician',
+    salary: 6159000,
+    hourly: 2961,
+  },
+  {
+    id: '0028dc9e-712f-4377-85e9-fec4b6a6442a',
+    name: 'Plumber',
+    salary: 6155000,
+    hourly: 2959,
+  },
+  {
+    id: '0038dc9e-712f-4377-85e9-fec4b6a6442a',
+    name: 'Registered Nurse',
+    salary: 8607000,
+    hourly: 4138,
+  },
+  {
+    id: '0048dc9e-712f-4377-85e9-fec4b6a6442a',
+    name: 'Nurse Practitioner',
+    salary: 12626000,
+    hourly: 6070,
+  },
+  {
+    id: '0058dc9e-712f-4377-85e9-fec4b6a6442a',
+    name: 'Software Developer',
+    salary: 13227000,
+    hourly: 6359,
+  },
+  {
+    id: '0068dc9e-712f-4377-85e9-fec4b6a6442a',
+    name: 'Kindergarten Teacher',
+    salary: 6269000,
+    hourly: 3014,
+  },
+  {
+    id: '0078dc9e-712f-4377-85e9-fec4b6a6442a',
+    name: 'Preschool Teacher',
+    salary: 3713000,
+    hourly: 1785,
+  },
+  {
+    id: '0088dc9e-712f-4377-85e9-fec4b6a6442a',
+    name: 'Firefighter',
+    salary: 5712000,
+    hourly: 2746,
+  },
+  {
+    id: '0098dc9e-712f-4377-85e9-fec4b6a6442a',
+    name: 'Lawyer',
+    salary: 14576000,
+    hourly: 7008,
+  },
+  {
+    id: '0108dc9e-712f-4377-85e9-fec4b6a6442a',
+    name: 'Pediatrician, General',
+    salary: 19869000,
+    hourly: 9552,
+  },
+  {
+    id: '0118dc9e-712f-4377-85e9-fec4b6a6442a',
+    name: 'Veterinarian',
+    salary: 11910000,
+    hourly: 5726,
+  },
+  {
+    id: '0138dc9e-712f-4377-85e9-fec4b6a6442a',
+    name: 'Dental Hygienist',
+    salary: 8753000,
+    hourly: 4208,
+  },
+  {
+    id: '0148dc9e-712f-4377-85e9-fec4b6a6442a',
+    name: 'Paramedic',
+    salary: 5318000,
+    hourly: 2557,
+  },
+  {
+    id: '0158dc9e-712f-4377-85e9-fec4b6a6442a',
+    name: 'Recycling and Reclamation Worker',
+    salary: 3766000,
+    hourly: 1811,
+  },
+];
+
 const customers = [
   {
     id: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
@@ -181,6 +268,7 @@ const revenue = [
 ];
 
 module.exports = {
+  careers,
   users,
   customers,
   invoices,

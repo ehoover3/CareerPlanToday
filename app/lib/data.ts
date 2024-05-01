@@ -4,11 +4,12 @@ import {
   CustomersTableType,
   InvoiceForm,
   InvoicesTable,
+  CareersTable,
   LatestInvoiceRaw,
   User,
   Revenue,
 } from './definitions';
-import { formatCurrency } from './utils';
+import { formatCurrencyToNearestCent } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
 
 export async function fetchRevenue() {
@@ -45,7 +46,7 @@ export async function fetchLatestInvoices() {
 
     const latestInvoices = data.rows.map((invoice) => ({
       ...invoice,
-      amount: formatCurrency(invoice.amount),
+      amount: formatCurrencyToNearestCent(invoice.amount),
     }));
     return latestInvoices;
   } catch (error) {
@@ -75,8 +76,12 @@ export async function fetchCardData() {
 
     const numberOfInvoices = Number(data[0].rows[0].count ?? '0');
     const numberOfCustomers = Number(data[1].rows[0].count ?? '0');
-    const totalPaidInvoices = formatCurrency(data[2].rows[0].paid ?? '0');
-    const totalPendingInvoices = formatCurrency(data[2].rows[0].pending ?? '0');
+    const totalPaidInvoices = formatCurrencyToNearestCent(
+      data[2].rows[0].paid ?? '0',
+    );
+    const totalPendingInvoices = formatCurrencyToNearestCent(
+      data[2].rows[0].pending ?? '0',
+    );
 
     return {
       numberOfCustomers,
@@ -90,7 +95,7 @@ export async function fetchCardData() {
   }
 }
 
-const ITEMS_PER_PAGE = 6;
+const ITEMS_PER_PAGE = 10;
 export async function fetchFilteredInvoices(
   query: string,
   currentPage: number,
@@ -127,6 +132,33 @@ export async function fetchFilteredInvoices(
   }
 }
 
+export async function fetchFilteredCareers(query: string, currentPage: number) {
+  noStore();
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  try {
+    const careers = await sql<CareersTable>`
+      SELECT
+        id,
+        name,
+        salary,
+        hourly
+      FROM careers
+      WHERE
+        name ILIKE ${`%${query}%`} OR
+        salary::text ILIKE ${`%${query}%`} OR
+        hourly::text ILIKE ${`%${query}%`}
+      ORDER BY name ASC
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+    `;
+
+    return careers.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch careers.');
+  }
+}
+
 export async function fetchInvoicesPages(query: string) {
   noStore();
   try {
@@ -146,6 +178,25 @@ export async function fetchInvoicesPages(query: string) {
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch total number of invoices.');
+  }
+}
+
+export async function fetchCareersPages(query: string) {
+  noStore();
+  try {
+    const count = await sql`SELECT COUNT(*)
+    FROM careers
+    WHERE
+      name ILIKE ${`%${query}%`} OR
+      salary::text ILIKE ${`%${query}%`} OR
+      hourly::text ILIKE ${`%${query}%`}
+  `;
+
+    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total number of careers.');
   }
 }
 
@@ -216,8 +267,8 @@ export async function fetchFilteredCustomers(query: string) {
 
     const customers = data.rows.map((customer) => ({
       ...customer,
-      total_pending: formatCurrency(customer.total_pending),
-      total_paid: formatCurrency(customer.total_paid),
+      total_pending: formatCurrencyToNearestCent(customer.total_pending),
+      total_paid: formatCurrencyToNearestCent(customer.total_paid),
     }));
 
     return customers;
