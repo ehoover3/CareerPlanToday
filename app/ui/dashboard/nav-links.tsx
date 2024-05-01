@@ -18,7 +18,8 @@ const links = [
     href: '/dashboard/invoices',
     icon: DocumentDuplicateIcon,
   },
-  { name: 'Customers', href: '/dashboard/customers', icon: UserGroupIcon },
+  { name: 'Careers', href: '/dashboard/careers', icon: UserGroupIcon },
+  { name: 'Colleges', href: '/dashboard/colleges', icon: UserGroupIcon },
 ];
 
 export default function NavLinks() {
