@@ -62,6 +62,16 @@ export type CareersTable = {
   hourly: number;
 };
 
+export type CollegesTable = {
+  id: string;
+  name: string;
+  type: string;
+  city: string;
+  state: string;
+  total_cost_in_state_off_campus: number;
+  total_cost_out_of_state_off_campus: number;
+};
+
 export type CustomersTableType = {
   id: string;
   name: string;

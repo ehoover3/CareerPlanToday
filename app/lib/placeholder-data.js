@@ -96,6 +96,81 @@ const careers = [
   },
 ];
 
+const colleges = [
+  {
+    id: '0018dc9e-712f-4377-85e9-fec4b6a6442a',
+    name: 'Purdue University-Main Campus',
+    type: 'Public',
+    address: { city: 'West Lafayette', state: 'Indiana' },
+    totalCostInStateOffCampus: 2562200,
+    totalCostOutOfStateOffCampus: 4442400,
+  },
+  {
+    id: '0028dc9e-712f-4377-85e9-fec4b6a6442a',
+    name: 'University of Notre Dame',
+    type: 'Private',
+    address: { city: 'Notre Dame', state: 'Indiana' },
+    totalCostInStateOffCampus: 8327100,
+    totalCostOutOfStateOffCampus: 8327100,
+  },
+  {
+    id: '0038dc9e-712f-4377-85e9-fec4b6a6442a',
+    name: 'Ivy Tech Community College',
+    type: 'Public',
+    address: { city: 'Indianapolis', state: 'Indiana' },
+    totalCostInStateOffCampus: 2078600,
+    totalCostOutOfStateOffCampus: 2533900,
+  },
+  {
+    id: '0048dc9e-712f-4377-85e9-fec4b6a6442a',
+    name: 'Ohio State University-Main Campus',
+    type: 'Public',
+    address: { city: 'Columbus', state: 'Ohio' },
+    totalCostInStateOffCampus: 3099700,
+    totalCostOutOfStateOffCampus: 5650300,
+  },
+  {
+    id: '0058dc9e-712f-4377-85e9-fec4b6a6442a',
+    name: 'Rose-Hulman Institute of Technology',
+    type: 'Private',
+    address: { city: 'Terre Haute', state: 'Indiana' },
+    totalCostInStateOffCampus: 7789000,
+    totalCostOutOfStateOffCampus: 7789000,
+  },
+  {
+    id: '0068dc9e-712f-4377-85e9-fec4b6a6442a',
+    name: 'Indiana Institute of Technology',
+    type: 'Private',
+    address: { city: 'Fort Wayne', state: 'Indiana' },
+    totalCostInStateOffCampus: 4829500,
+    totalCostOutOfStateOffCampus: 4829500,
+  },
+  {
+    id: '0078dc9e-712f-4377-85e9-fec4b6a6442a',
+    name: 'University of Saint Francis-Fort Wayne',
+    type: 'Private',
+    address: { city: 'Fort Wayne', state: 'Indiana' },
+    totalCostInStateOffCampus: 5045000,
+    totalCostOutOfStateOffCampus: 5045000,
+  },
+  {
+    id: '0088dc9e-712f-4377-85e9-fec4b6a6442a',
+    name: 'Butler University',
+    type: 'Private',
+    address: { city: 'Indianapolis', state: 'Indiana' },
+    totalCostInStateOffCampus: 6721000,
+    totalCostOutOfStateOffCampus: 6721000,
+  },
+  {
+    id: '0098dc9e-712f-4377-85e9-fec4b6a6442a',
+    name: 'Miami University-Oxford',
+    type: 'Public',
+    address: { city: 'Oxford', state: 'Ohio' },
+    totalCostInStateOffCampus: 3875700,
+    totalCostOutOfStateOffCampus: 6097300,
+  },
+];
+
 const customers = [
   {
     id: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
@@ -269,6 +344,7 @@ const revenue = [
 
 module.exports = {
   careers,
+  colleges,
   users,
   customers,
   invoices,

@@ -4,6 +4,9 @@ import {
   UserGroupIcon,
   HomeIcon,
   DocumentDuplicateIcon,
+  WrenchScrewdriverIcon,
+  AcademicCapIcon,
+  CurrencyDollarIcon,
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -18,8 +21,21 @@ const links = [
     href: '/dashboard/invoices',
     icon: DocumentDuplicateIcon,
   },
-  { name: 'Careers', href: '/dashboard/careers', icon: UserGroupIcon },
-  { name: 'Colleges', href: '/dashboard/colleges', icon: UserGroupIcon },
+  {
+    name: 'Careers',
+    href: '/dashboard/careers',
+    icon: WrenchScrewdriverIcon,
+  },
+  {
+    name: 'Colleges',
+    href: '/dashboard/colleges',
+    icon: AcademicCapIcon,
+  },
+  {
+    name: 'Plan',
+    href: '/dashboard/collegevalue',
+    icon: CurrencyDollarIcon,
+  },
 ];
 
 export default function NavLinks() {

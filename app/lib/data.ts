@@ -5,6 +5,7 @@ import {
   InvoiceForm,
   InvoicesTable,
   CareersTable,
+  CollegesTable,
   LatestInvoiceRaw,
   User,
   Revenue,
@@ -156,6 +157,40 @@ export async function fetchFilteredCareers(query: string, currentPage: number) {
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch careers.');
+  }
+}
+
+export async function fetchFilteredColleges(
+  query: string,
+  currentPage: number,
+) {
+  noStore();
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  try {
+    const colleges = await sql<CollegesTable>`
+      SELECT
+        id,
+        name,
+        type,
+        city,
+        state,
+        total_cost_in_state_off_campus,
+        total_cost_out_of_state_off_campus
+      FROM colleges
+      WHERE
+        name ILIKE ${`%${query}%`} OR
+        type ILIKE ${`%${query}%`} OR
+        city ILIKE ${`%${query}%`} OR
+        state ILIKE ${`%${query}%`}
+      ORDER BY name ASC
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+    `;
+
+    return colleges.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch colleges.');
   }
 }
 

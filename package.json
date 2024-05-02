@@ -8,6 +8,7 @@
     "prettier:check": "prettier --check --ignore-unknown .",
     "seed": "node -r dotenv/config ./scripts/seed.js",
     "seedCareer": "node -r dotenv/config ./scripts/seedCareer.js",
+    "seedCollege": "node -r dotenv/config ./scripts/seedCollege.js",
     "start": "next start"
   },
   "dependencies": {
