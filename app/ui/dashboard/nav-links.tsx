@@ -33,7 +33,7 @@ const links = [
   },
   {
     name: 'Plan',
-    href: '/dashboard/collegevalue',
+    href: '/dashboard/plan',
     icon: CurrencyDollarIcon,
   },
 ];

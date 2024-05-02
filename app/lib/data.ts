@@ -235,6 +235,26 @@ export async function fetchCareersPages(query: string) {
   }
 }
 
+export async function fetchCollegesPages(query: string) {
+  noStore();
+  try {
+    const count = await sql`SELECT COUNT(*)
+    FROM colleges
+    WHERE
+      name ILIKE ${`%${query}%`} OR
+      type ILIKE ${`%${query}%`} OR
+      city ILIKE ${`%${query}%`} OR
+      state ILIKE ${`%${query}%`}
+  `;
+
+    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total number of colleges.');
+  }
+}
+
 export async function fetchInvoiceById(id: string) {
   noStore();
   try {
