@@ -89,11 +89,15 @@ export default function PlanForm({
   const [netMoreEarningsWithCollege, setNetMoreEarningsWithCollege] =
     useState<number>(0);
 
-  const [stateResidency, setStateResidency] = useState<string>('');
+  const [filterCollegesByState, setFilterCollegesByState] = useState('');
+
+  const [userStateResidency, setUserStateResidency] = useState<string>('');
 
   const [selectedCollege, setSelectedCollege] = useState<any>({});
   const [selectedCollegeCost, setSelectedCollegeCost] = useState<number>(0);
   const [totalValueOfCollege, setTotalValueOfCollege] = useState<number>(0);
+
+  const [sortedColleges, setSortedColleges] = useState<any>([]);
 
   const handleChangeCareerWithCollege = async (event: any) => {
     setCareerWithCollegeSalary(event.target.value);
@@ -108,11 +112,15 @@ export default function PlanForm({
   };
 
   const handleChangeStateResidency = async (event: any) => {
-    setStateResidency(event.target.value);
+    setUserStateResidency(event.target.value);
   };
 
   const handleSelectedCollege = async (event: any) => {
     setSelectedCollege(JSON.parse(event.target.value));
+  };
+
+  const handleFilterCollegesByState = async (event: any) => {
+    setFilterCollegesByState(event.target.value);
   };
 
   useEffect(() => {
@@ -134,13 +142,32 @@ export default function PlanForm({
 
   useEffect(() => {
     {
-      selectedCollege.state === stateResidency
+      selectedCollege.state === userStateResidency
         ? setSelectedCollegeCost(selectedCollege.total_cost_in_state_off_campus)
         : setSelectedCollegeCost(
             selectedCollege.total_cost_out_of_state_off_campus,
           );
     }
-  }, [selectedCollege, stateResidency]);
+  }, [selectedCollege, userStateResidency]);
+
+  useEffect(() => {
+    {
+      if (userStateResidency === filterCollegesByState) {
+        const updatedColleges = colleges.sort(
+          (a: any, b: any) =>
+            a.total_cost_in_state_off_campus - b.total_cost_in_state_off_campus,
+        );
+        setSortedColleges(updatedColleges);
+      } else {
+        const updatedColleges = colleges.sort(
+          (a: any, b: any) =>
+            a.total_cost_out_of_state_off_campus -
+            b.total_cost_out_of_state_off_campus,
+        );
+        setSortedColleges(updatedColleges);
+      }
+    }
+  }, [colleges, userStateResidency, filterCollegesByState]);
 
   setNetMoreEarningsWithCollege;
 
@@ -175,6 +202,7 @@ export default function PlanForm({
                     </option>
                     {careers.map((career: any) => (
                       <option key={career.name} value={career.salary}>
+                        {formatCurrencyToNearestDollar(career.salary)}{' '}
                         {career.name}
                       </option>
                     ))}
@@ -197,6 +225,7 @@ export default function PlanForm({
                     </option>
                     {careers.map((career: any) => (
                       <option key={career.name} value={career.salary}>
+                        {formatCurrencyToNearestDollar(career.salary)}{' '}
                         {career.name}
                       </option>
                     ))}
@@ -313,40 +342,79 @@ export default function PlanForm({
           <h2 className="text-base font-semibold leading-7 text-gray-900">
             College Degree Cost
           </h2>
-          <select
-            id="careerWithCollege"
-            name="careerWithCollege"
-            autoComplete="country-name"
-            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-            onChange={handleChangeStateResidency}
-          >
-            <option value="" disabled selected>
-              Select State of Residency
-            </option>
-            {allStates.map((state, index) => (
-              <option key={index} value={state}>
-                {state}
-              </option>
-            ))}
-          </select>
 
-          <div className="mt-2">
+          <div className="col-span-full flex items-center justify-between">
+            <div>Your Residency</div>
             <select
               id="careerWithCollege"
               name="careerWithCollege"
               autoComplete="country-name"
               className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-              onChange={handleSelectedCollege}
+              onChange={handleChangeStateResidency}
             >
               <option value="" disabled selected>
-                Select College
+                Select State of Residency
               </option>
-              {colleges.map((college: any) => (
-                <option key={college.name} value={JSON.stringify(college)}>
-                  {college.name}
+              {allStates.map((state, index) => (
+                <option key={index} value={state}>
+                  {state}
                 </option>
               ))}
             </select>
+          </div>
+
+          <div className="col-span-full flex items-center justify-between">
+            <div>Filter Colleges</div>
+            <select
+              id="careerWithCollege"
+              name="careerWithCollege"
+              autoComplete="country-name"
+              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+              onChange={handleFilterCollegesByState}
+            >
+              <option value="" disabled selected>
+                Filter Colleges by State
+              </option>
+              {allStates.map((state, index) => (
+                <option key={index} value={state}>
+                  {state}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="col-span-full flex items-center justify-between">
+            <div>Select College</div>
+
+            <div className="mt-2">
+              <select
+                id="careerWithCollege"
+                name="careerWithCollege"
+                autoComplete="country-name"
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                onChange={handleSelectedCollege}
+              >
+                <option value="" disabled selected>
+                  Select College
+                </option>
+                {sortedColleges
+                  .filter(
+                    (college: any) => college.state === filterCollegesByState,
+                  )
+                  .map((college: any) => (
+                    <option key={college.name} value={JSON.stringify(college)}>
+                      {filterCollegesByState == userStateResidency
+                        ? formatCurrencyToNearestDollar(
+                            college.total_cost_in_state_off_campus,
+                          )
+                        : formatCurrencyToNearestDollar(
+                            college.total_cost_out_of_state_off_campus,
+                          )}{' '}
+                      {college.name}
+                    </option>
+                  ))}
+              </select>
+            </div>
           </div>
 
           <div className="col-span-full flex items-center justify-between">
@@ -419,7 +487,7 @@ export default function PlanForm({
             <div className="mt-2">
               {
                 <div>
-                  - {formatCurrencyToNearestDollar(selectedCollegeCost * 4)}
+                  {formatCurrencyToNearestDollar(selectedCollegeCost * 4)}
                 </div>
               }
             </div>
