@@ -1,16 +1,34 @@
 'use client';
 
 import { formatCurrencyToNearestDollar } from '@/app/lib/utils';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function PlanForm({ careers }: { careers: any }) {
-  const [careerWithCollegeSalary, setCareerWithCollegeSalary] = useState<
-    number | null
-  >(null);
+  const [inputWidth, setInputWidth] = useState<string>('196px');
+  useEffect(() => {
+    const handleResize = () => {
+      setInputWidth(window.innerWidth > 640 ? '196px' : '216.5px');
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
-  const [careerWithoutCollegeSalary, setCareerWithoutCollegeSalary] = useState<
-    number | null
-  >(null);
+  const [careerWithCollegeSalary, setCareerWithCollegeSalary] =
+    useState<number>(0);
+
+  const [careerWithoutCollegeSalary, setCareerWithoutCollegeSalary] =
+    useState<number>(0);
+
+  const [lifeYearsEmployed, setLifeYearsEmployed] = useState<number>(40);
+
+  const [lifeEarningsWithCollege, setLifeEarningsWithCollege] =
+    useState<number>(0);
+
+  const [lifeEarningsWithoutCollege, setLifeEarningsWithoutCollege] =
+    useState<number>(0);
+
+  const [netMoreEarningsWithCollege, setNetMoreEarningsWithCollege] =
+    useState<number>(0);
 
   const handleChangeCareerWithCollege = async (event: any) => {
     setCareerWithCollegeSalary(event.target.value);
@@ -20,142 +38,173 @@ export default function PlanForm({ careers }: { careers: any }) {
     setCareerWithoutCollegeSalary(event.target.value);
   };
 
+  const handleLifeYearsEmployed = async (event: any) => {
+    setLifeYearsEmployed(event.target.value);
+  };
+
+  useEffect(() => {
+    setLifeEarningsWithCollege(careerWithCollegeSalary * lifeYearsEmployed);
+  }, [careerWithCollegeSalary, lifeYearsEmployed]);
+
+  useEffect(() => {
+    setLifeEarningsWithoutCollege(
+      careerWithoutCollegeSalary * (lifeYearsEmployed + 4),
+    );
+  }, [careerWithoutCollegeSalary, lifeYearsEmployed]);
+
+  useEffect(() => {
+    setNetMoreEarningsWithCollege(
+      lifeEarningsWithCollege - lifeEarningsWithoutCollege,
+    );
+  }, [lifeEarningsWithCollege, lifeEarningsWithoutCollege]);
+
+  setNetMoreEarningsWithCollege;
+
   return (
     <form>
       <div className="space-y-12">
         <div className="border-b border-gray-900/10 pb-12">
           <h2 className="text-base font-semibold leading-7 text-gray-900">
-            Career Lifetime Earnings Estimate
+            Life Earnings Estimate
           </h2>
           <p className="mt-1 text-sm leading-6 text-gray-600">
             How much more money can you earn with a college degree?
           </p>
 
-          <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-            <div className="col-span-full">
-              <label
-                htmlFor="country"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Select Career That Requires College
-              </label>
-              <div className="mt-2">
-                <select
-                  id="careerWithCollege"
-                  name="careerWithCollege"
-                  autoComplete="country-name"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                  onChange={handleChangeCareerWithCollege}
-                >
-                  <option value="" disabled selected>
-                    Select Career
-                  </option>
-                  {careers.map((career: any) => (
-                    <option key={career.name} value={career.salary}>
-                      {career.name}
+          <div
+            className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8"
+            style={{ maxWidth: '450px' }}
+          >
+            <div className="min-w-[400px]">
+              <div className="col-span-full flex items-center justify-between">
+                <div>Career With College</div>
+                <div className="mt-2">
+                  <select
+                    id="careerWithCollege"
+                    name="careerWithCollege"
+                    autoComplete="country-name"
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                    onChange={handleChangeCareerWithCollege}
+                  >
+                    <option value="" disabled selected>
+                      Select Career
                     </option>
-                  ))}
-                </select>
+                    {careers.map((career: any) => (
+                      <option key={career.name} value={career.salary}>
+                        {career.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
-            </div>
 
-            <div className="col-span-full">
-              <label
-                htmlFor="country"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Select Career That Does Not Require College
-              </label>
-              <div className="mt-2">
-                <select
-                  id="careerWithoutCollege"
-                  name="careerWithoutCollege"
-                  autoComplete="country-name"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                  onChange={handleChangeCareerWithoutCollege}
-                >
-                  {careers.map((career: any) => (
-                    <option key={career.name} value={career.salary}>
-                      {career.name}
+              <div className="col-span-full flex items-center justify-between">
+                <div>Career Without College</div>
+                <div className="mt-2">
+                  <select
+                    id="careerWithoutCollege"
+                    name="careerWithoutCollege"
+                    autoComplete="country-name"
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                    onChange={handleChangeCareerWithoutCollege}
+                  >
+                    <option value="" disabled selected>
+                      Select Career
                     </option>
-                  ))}
-                </select>
+                    {careers.map((career: any) => (
+                      <option key={career.name} value={career.salary}>
+                        {career.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="col-span-full flex items-center justify-between">
+                <div>Years Employed</div>
+                <div className="mt-2">
+                  <input
+                    type="number"
+                    name="lifeYearsEmployed"
+                    id="lifeYearsEmployed"
+                    autoComplete="address-level2"
+                    className="block rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    defaultValue="40"
+                    style={{
+                      width: window.innerWidth > 640 ? '196px' : '216.5px',
+                    }}
+                    onChange={handleLifeYearsEmployed}
+                  />
+                </div>
               </div>
             </div>
 
             <div className="col-span-full">
-              <label
-                htmlFor="city"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Select Lifetime Years Employed
-              </label>
-              <div className="mt-2">
-                <input
-                  type="number"
-                  name="lifetimeYearsEmployed"
-                  id="lifetimeYearsEmployed"
-                  autoComplete="address-level2"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  defaultValue="40"
-                />
-              </div>
-            </div>
-
-            <div className="col-span-full">
-              <label
-                htmlFor="city"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Career Earnings Estimate
-              </label>
-              <div className="mt-2">
-                {careerWithCollegeSalary
-                  ? formatCurrencyToNearestDollar(careerWithCollegeSalary)
-                  : null}{' '}
-                Annual Career Earnings with College
-              </div>
-              <div className="mt-2">
-                40 years
-                {/* TODO: Career years 40 or so... update so this is dynamic */}
-              </div>
-              <div className="mt-2">
-                $1,200,000 lifetime earnings with college
-                {/* TODO: Career years 40 or so... update so this is dynamic */}
-              </div>
-              <div className="mt-2">
-                _{/* TODO: update this so _ is removed, and there is a gap */}
+              <div>
+                <div className="col-span-full flex items-center justify-between">
+                  <div className="mt-2">Salary with College</div>
+                  <div className="mt-2">
+                    {careerWithCollegeSalary
+                      ? formatCurrencyToNearestDollar(careerWithCollegeSalary)
+                      : ''}{' '}
+                  </div>
+                </div>
+                <div className="col-span-full flex items-center justify-between">
+                  <div className="mt-2 ">Years Employed</div>
+                  <div className="underline">x {lifeYearsEmployed}</div>
+                </div>
+                <div className="col-span-full flex items-center justify-between">
+                  <div className="mt-2">Life Earnings with College</div>
+                  <div>
+                    {formatCurrencyToNearestDollar(lifeEarningsWithCollege)}
+                  </div>
+                </div>{' '}
               </div>
 
-              <div className="mt-2">
-                {careerWithoutCollegeSalary
-                  ? formatCurrencyToNearestDollar(careerWithoutCollegeSalary)
-                  : null}{' '}
-                Annual Career Earnings without College
+              <div className="mt-8"></div>
+
+              <div className="col-span-full flex items-center justify-between">
+                <div>Salary without College</div>
+                <div>
+                  {careerWithoutCollegeSalary
+                    ? formatCurrencyToNearestDollar(careerWithoutCollegeSalary)
+                    : ''}
+                </div>
+              </div>
+              <div className="col-span-full flex items-center justify-between">
+                <div className="mt-2">Years Employed </div>{' '}
+                <div className="mt-2 underline">x {lifeYearsEmployed + 4}</div>{' '}
               </div>
 
-              <div className="mt-2">
-                44 years
-                {/* TODO: Career years 40 or so... update so this is dynamic */}
+              <div className="col-span-full flex items-center justify-between">
+                <div className="mt-2">Life Earnings without College</div>
+                <div className="mt-2">
+                  {formatCurrencyToNearestDollar(lifeEarningsWithoutCollege)}
+                </div>
               </div>
-              <div className="mt-2">
-                $1,000,000 lifetime earnings without college
-                {/* TODO: update so this is dynamic */}
+
+              <div className="mt-8"></div>
+              <div className="col-span-full flex items-center justify-between">
+                <div className="mt-2">Earnings with College</div>
+                <div className="mt-2">
+                  {formatCurrencyToNearestDollar(lifeEarningsWithCollege)}
+                </div>
               </div>
-              <div className="mt-2">
-                _{/* TODO: update this so _ is removed, and there is a gap */}
+
+              <div className="col-span-full flex items-center justify-between">
+                <div className="mt-2">Earnings without College</div>
+
+                <div className="mt-2 underline">
+                  - {formatCurrencyToNearestDollar(lifeEarningsWithoutCollege)}{' '}
+                </div>
               </div>
-              <div className="mt-2">
-                $1,200,000 lifetime earnings with college
-                {/* TODO: Career years 40 or so... update so this is dynamic */}
-              </div>
-              <div className="mt-2">
-                - $1,000,000 lifetime earnings without college
-                {/* TODO: update so this is dynamic */}
-              </div>
-              <div className="mt-2">
-                $200,000 more lifetime earnings with college
-                {/* TODO: update so this is dynamic */}
+
+              <div className="col-span-full flex items-center justify-between">
+                <div className="mt-2">Net Earnings with College</div>
+
+                <div className="mt-2">
+                  {formatCurrencyToNearestDollar(netMoreEarningsWithCollege)}{' '}
+                </div>
               </div>
             </div>
           </div>
@@ -163,180 +212,27 @@ export default function PlanForm({ careers }: { careers: any }) {
 
         <div className="border-b border-gray-900/10 pb-12">
           <h2 className="text-base font-semibold leading-7 text-gray-900">
-            Profile
+            College Degree Cost
           </h2>
-          <p className="mt-1 text-sm leading-6 text-gray-600">
-            This information will be displayed publicly so be careful what you
-            share.
-          </p>
-
-          <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-            <div className="sm:col-span-4">
-              <label
-                htmlFor="username"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Username
-              </label>
-              <div className="mt-2">
-                <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-                  <span className="flex select-none items-center pl-3 text-gray-500 sm:text-sm">
-                    workcation.com/
-                  </span>
-                  <input
-                    type="text"
-                    name="username"
-                    id="username"
-                    autoComplete="username"
-                    className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                    placeholder="janesmith"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
+          <div className="mt-2">Freshmen Year Cost</div>
+          <div className="mt-2">Sophomore Year Cost</div>
+          <div className="mt-2">Junior Year Cost</div>
+          <div className="mt-2">Senior Year Cost</div>
         </div>
 
         <div className="border-b border-gray-900/10 pb-12">
-          <div className="mt-10 space-y-10">
-            <fieldset>
-              <legend className="text-sm font-semibold leading-6 text-gray-900">
-                By Email
-              </legend>
-              <div className="mt-6 space-y-6">
-                <div className="relative flex gap-x-3">
-                  <div className="flex h-6 items-center">
-                    <input
-                      id="comments"
-                      name="comments"
-                      type="checkbox"
-                      className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                    />
-                  </div>
-                  <div className="text-sm leading-6">
-                    <label
-                      htmlFor="comments"
-                      className="font-medium text-gray-900"
-                    >
-                      Comments
-                    </label>
-                    <p className="text-gray-500">
-                      Get notified when someones posts a comment on a posting.
-                    </p>
-                  </div>
-                </div>
-                <div className="relative flex gap-x-3">
-                  <div className="flex h-6 items-center">
-                    <input
-                      id="candidates"
-                      name="candidates"
-                      type="checkbox"
-                      className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                    />
-                  </div>
-                  <div className="text-sm leading-6">
-                    <label
-                      htmlFor="candidates"
-                      className="font-medium text-gray-900"
-                    >
-                      Candidates
-                    </label>
-                    <p className="text-gray-500">
-                      Get notified when a candidate applies for a job.
-                    </p>
-                  </div>
-                </div>
-                <div className="relative flex gap-x-3">
-                  <div className="flex h-6 items-center">
-                    <input
-                      id="offers"
-                      name="offers"
-                      type="checkbox"
-                      className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                    />
-                  </div>
-                  <div className="text-sm leading-6">
-                    <label
-                      htmlFor="offers"
-                      className="font-medium text-gray-900"
-                    >
-                      Offers
-                    </label>
-                    <p className="text-gray-500">
-                      Get notified when a candidate accepts or rejects an offer.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </fieldset>
-            <fieldset>
-              <legend className="text-sm font-semibold leading-6 text-gray-900">
-                Push Notifications
-              </legend>
-              <p className="mt-1 text-sm leading-6 text-gray-600">
-                These are delivered via SMS to your mobile phone.
-              </p>
-              <div className="mt-6 space-y-6">
-                <div className="flex items-center gap-x-3">
-                  <input
-                    id="push-everything"
-                    name="push-notifications"
-                    type="radio"
-                    className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                  />
-                  <label
-                    htmlFor="push-everything"
-                    className="block text-sm font-medium leading-6 text-gray-900"
-                  >
-                    Everything
-                  </label>
-                </div>
-                <div className="flex items-center gap-x-3">
-                  <input
-                    id="push-email"
-                    name="push-notifications"
-                    type="radio"
-                    className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                  />
-                  <label
-                    htmlFor="push-email"
-                    className="block text-sm font-medium leading-6 text-gray-900"
-                  >
-                    Same as email
-                  </label>
-                </div>
-                <div className="flex items-center gap-x-3">
-                  <input
-                    id="push-nothing"
-                    name="push-notifications"
-                    type="radio"
-                    className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                  />
-                  <label
-                    htmlFor="push-nothing"
-                    className="block text-sm font-medium leading-6 text-gray-900"
-                  >
-                    No push notifications
-                  </label>
-                </div>
-              </div>
-            </fieldset>
-          </div>
+          <h2 className="text-base font-semibold leading-7 text-gray-900">
+            Funding Plan
+          </h2>
         </div>
       </div>
 
       <div className="mt-6 flex items-center justify-end gap-x-6">
         <button
-          type="button"
-          className="text-sm font-semibold leading-6 text-gray-900"
-        >
-          Cancel
-        </button>
-        <button
           type="submit"
           className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
-          Save
+          Download PDF
         </button>
       </div>
     </form>
