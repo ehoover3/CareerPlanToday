@@ -3,7 +3,66 @@
 import { formatCurrencyToNearestDollar } from '@/app/lib/utils';
 import { useState, useEffect } from 'react';
 
-export default function PlanForm({ careers }: { careers: any }) {
+export default function PlanForm({
+  careers,
+  colleges,
+}: {
+  careers: any;
+  colleges: any;
+}) {
+  const allStates = [
+    'Alabama',
+    'Alaska',
+    'Arizona',
+    'Arkansas',
+    'California',
+    'Colorado',
+    'Connecticut',
+    'Delaware',
+    'Florida',
+    'Georgia',
+    'Hawaii',
+    'Idaho',
+    'Illinois',
+    'Indiana',
+    'Iowa',
+    'Kansas',
+    'Kentucky',
+    'Louisiana',
+    'Maine',
+    'Maryland',
+    'Massachusetts',
+    'Michigan',
+    'Minnesota',
+    'Mississippi',
+    'Missouri',
+    'Montana',
+    'Nebraska',
+    'Nevada',
+    'New Hampshire',
+    'New Jersey',
+    'New Mexico',
+    'New York',
+    'North Carolina',
+    'North Dakota',
+    'Ohio',
+    'Oklahoma',
+    'Oregon',
+    'Pennsylvania',
+    'Rhode Island',
+    'South Carolina',
+    'South Dakota',
+    'Tennessee',
+    'Texas',
+    'Utah',
+    'Vermont',
+    'Virginia',
+    'Washington',
+    'West Virginia',
+    'Wisconsin',
+    'Wyoming',
+  ];
+
   const [inputWidth, setInputWidth] = useState<string>('196px');
   useEffect(() => {
     const handleResize = () => {
@@ -30,6 +89,12 @@ export default function PlanForm({ careers }: { careers: any }) {
   const [netMoreEarningsWithCollege, setNetMoreEarningsWithCollege] =
     useState<number>(0);
 
+  const [stateResidency, setStateResidency] = useState<string>('');
+
+  const [selectedCollege, setSelectedCollege] = useState<any>({});
+  const [selectedCollegeCost, setSelectedCollegeCost] = useState<number>(0);
+  const [totalValueOfCollege, setTotalValueOfCollege] = useState<number>(0);
+
   const handleChangeCareerWithCollege = async (event: any) => {
     setCareerWithCollegeSalary(event.target.value);
   };
@@ -42,6 +107,14 @@ export default function PlanForm({ careers }: { careers: any }) {
     setLifeYearsEmployed(event.target.value);
   };
 
+  const handleChangeStateResidency = async (event: any) => {
+    setStateResidency(event.target.value);
+  };
+
+  const handleSelectedCollege = async (event: any) => {
+    setSelectedCollege(JSON.parse(event.target.value));
+  };
+
   useEffect(() => {
     setLifeEarningsWithCollege(careerWithCollegeSalary * lifeYearsEmployed);
   }, [careerWithCollegeSalary, lifeYearsEmployed]);
@@ -49,6 +122,7 @@ export default function PlanForm({ careers }: { careers: any }) {
   useEffect(() => {
     setLifeEarningsWithoutCollege(
       careerWithoutCollegeSalary * (lifeYearsEmployed + 4),
+      // there is an error here!!!
     );
   }, [careerWithoutCollegeSalary, lifeYearsEmployed]);
 
@@ -57,6 +131,16 @@ export default function PlanForm({ careers }: { careers: any }) {
       lifeEarningsWithCollege - lifeEarningsWithoutCollege,
     );
   }, [lifeEarningsWithCollege, lifeEarningsWithoutCollege]);
+
+  useEffect(() => {
+    {
+      selectedCollege.state === stateResidency
+        ? setSelectedCollegeCost(selectedCollege.total_cost_in_state_off_campus)
+        : setSelectedCollegeCost(
+            selectedCollege.total_cost_out_of_state_off_campus,
+          );
+    }
+  }, [selectedCollege, stateResidency]);
 
   setNetMoreEarningsWithCollege;
 
@@ -222,20 +306,145 @@ export default function PlanForm({ careers }: { careers: any }) {
           </div>
         </div>
 
-        <div className="border-b border-gray-900/10 pb-12">
+        <div
+          className="border-b border-gray-900/10 pb-12"
+          style={{ maxWidth: '450px' }}
+        >
           <h2 className="text-base font-semibold leading-7 text-gray-900">
             College Degree Cost
           </h2>
-          <div className="mt-2">Freshmen Year Cost</div>
-          <div className="mt-2">Sophomore Year Cost</div>
-          <div className="mt-2">Junior Year Cost</div>
-          <div className="mt-2">Senior Year Cost</div>
+          <select
+            id="careerWithCollege"
+            name="careerWithCollege"
+            autoComplete="country-name"
+            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+            onChange={handleChangeStateResidency}
+          >
+            <option value="" disabled selected>
+              Select State of Residency
+            </option>
+            {allStates.map((state, index) => (
+              <option key={index} value={state}>
+                {state}
+              </option>
+            ))}
+          </select>
+
+          <div className="mt-2">
+            <select
+              id="careerWithCollege"
+              name="careerWithCollege"
+              autoComplete="country-name"
+              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+              onChange={handleSelectedCollege}
+            >
+              <option value="" disabled selected>
+                Select College
+              </option>
+              {colleges.map((college: any) => (
+                <option key={college.name} value={JSON.stringify(college)}>
+                  {college.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="col-span-full flex items-center justify-between">
+            <div className="mt-2">Freshmen Year Cost</div>
+            <div className="mt-2">
+              {formatCurrencyToNearestDollar(selectedCollegeCost)}
+            </div>
+          </div>
+
+          <div className="col-span-full flex items-center justify-between">
+            <div className="mt-2">Sophomore Year Cost</div>
+            <div className="mt-2">
+              {formatCurrencyToNearestDollar(selectedCollegeCost)}
+            </div>
+          </div>
+
+          <div className="col-span-full flex items-center justify-between">
+            <div className="mt-2">Junior Year Cost</div>
+            <div className="mt-2">
+              {formatCurrencyToNearestDollar(selectedCollegeCost)}
+            </div>
+          </div>
+
+          <div className="col-span-full flex items-center justify-between">
+            <div className="mt-2">Senior Year Cost</div>
+            <div className="mt-2">
+              {formatCurrencyToNearestDollar(selectedCollegeCost)}
+            </div>
+          </div>
+
+          <div className="col-span-full flex items-center justify-between">
+            <div className="mt-2">Total College Cost</div>
+            <div className="mt-2">
+              {formatCurrencyToNearestDollar(selectedCollegeCost * 4)}
+            </div>
+          </div>
         </div>
 
         <div className="border-b border-gray-900/10 pb-12">
           <h2 className="text-base font-semibold leading-7 text-gray-900">
             Funding Plan
           </h2>
+        </div>
+
+        <div
+          className="border-b border-gray-900/10 pb-12"
+          style={{ maxWidth: '450px' }}
+        >
+          <h2 className="text-base font-semibold leading-7 text-gray-900">
+            Overview
+          </h2>
+
+          <div className="col-span-full flex items-center justify-between">
+            <div className="mt-2">Net Earnings with College</div>
+
+            <div className="mt-2">
+              {netMoreEarningsWithCollege < 0 ? (
+                <div style={{ color: 'red', fontWeight: 'bold' }}>
+                  {formatCurrencyToNearestDollar(netMoreEarningsWithCollege)}
+                </div>
+              ) : (
+                <div>
+                  {formatCurrencyToNearestDollar(netMoreEarningsWithCollege)}
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="col-span-full flex items-center justify-between">
+            <div className="mt-2">Total College Cost</div>
+            <div className="mt-2">
+              {
+                <div>
+                  - {formatCurrencyToNearestDollar(selectedCollegeCost * 4)}
+                </div>
+              }
+            </div>
+          </div>
+
+          <div className="col-span-full flex items-center justify-between">
+            <div className="mt-2">Total Value of College</div>
+            <div
+              className="mt-2"
+              style={{
+                color:
+                  netMoreEarningsWithCollege - selectedCollegeCost * 4 < 0
+                    ? 'red'
+                    : 'black',
+                fontWeight:
+                  netMoreEarningsWithCollege - selectedCollegeCost * 4 < 0
+                    ? 'bold'
+                    : 'normal',
+              }}
+            >
+              {formatCurrencyToNearestDollar(
+                netMoreEarningsWithCollege - selectedCollegeCost * 4,
+              )}
+            </div>
+          </div>
         </div>
       </div>
 
