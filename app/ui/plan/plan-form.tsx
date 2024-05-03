@@ -203,7 +203,19 @@ export default function PlanForm({ careers }: { careers: any }) {
                 <div className="mt-2">Net Earnings with College</div>
 
                 <div className="mt-2">
-                  {formatCurrencyToNearestDollar(netMoreEarningsWithCollege)}{' '}
+                  {netMoreEarningsWithCollege < 0 ? (
+                    <div style={{ color: 'red', fontWeight: 'bold' }}>
+                      {formatCurrencyToNearestDollar(
+                        netMoreEarningsWithCollege,
+                      )}
+                    </div>
+                  ) : (
+                    <div>
+                      {formatCurrencyToNearestDollar(
+                        netMoreEarningsWithCollege,
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
